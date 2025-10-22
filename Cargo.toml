@@ -1,0 +1,10 @@
+[package]
+name = "equation-solver"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[[bin]]
+name = "equation-solver"
+path = "src/equation-solver.rs"

@@ -1,8 +1,15 @@
 fn main() {
     loop {
         let input = get_input();
-        let equation = Equation::from_string(&input);
-        println!("Equation: {:#?}", equation)
+        if input.contains("exit") {
+            std::process::exit(0);
+        }
+        let mut equation = Equation::from_string(&input);
+        //println!("Equation: {:#?}", equation);
+        if equation.is_some() {
+            let mut equation = equation.unwrap();
+            equation.process_left();
+        }
     }
 }
 
@@ -56,6 +63,32 @@ impl<'a> Equation<'a> {
                 ).filter(|s: &String| !s.is_empty())
                 .collect()
         })
+    }
+
+    pub fn process_left(&mut self) -> Option<String> {
+        for i in 0..self.left_values.len() - 1 {
+            let mut to_remove1 = 0.0;
+            let mut to_remove2 = 0.0;
+            let result = match self.left_operators[i].chars().next().unwrap() {
+                '+' => {
+                    let val1: f32 = self.left_values[i].parse::<f32>().unwrap();
+                    let val2: f32 = self.left_values[i+1].parse::<f32>().unwrap();
+                    println!("{}", val1 + val2);
+                    to_remove1 = val1;
+                    to_remove2 = val2;
+                    Some(format!("{}", val1+val2))
+                },
+                '-' => {
+                },
+                _ => {
+                    println!("Multiplication and division are not supported yet!");
+                    return None;
+                }
+            };
+            self.left_values.clone().into_iter().filter(|c| *c != to_remove1.to_string()).collect::<Vec<_>>();
+            self.left_values.push(format!("{}", result));
+        }
+        None
     }
 }
 
